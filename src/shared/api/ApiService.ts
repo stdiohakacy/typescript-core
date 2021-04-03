@@ -31,7 +31,7 @@ export class ApiService {
             routePrefix: '/api',
             controllers: [
                 // path.join(__dirname, './controllers/**/*{.js,.ts}')
-                path.join(__dirname, '../../modules/**/controllers/*{.js,.ts}')
+                path.join(__dirname, '../../modules/**/*{.js,.ts}')
             ],
             // middlewares: [
             //     path.join(__dirname, './middlewares/*{.js,.ts}')
