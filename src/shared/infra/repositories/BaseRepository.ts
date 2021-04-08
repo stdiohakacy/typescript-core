@@ -1,7 +1,6 @@
 import { getRepository, QueryRunner, Repository } from "typeorm";
 import { IEntity } from "../../domain/base/IEntity";
 import { BaseEntityDb } from "../databases/typeorm/entities/BaseEntityDb";
-import { RoomTypeDb } from "../databases/typeorm/entities/RoomTypeDb";
 import { IBaseRepository } from "./IBaseRepository";
 
 export abstract class BaseRepository<
@@ -20,7 +19,6 @@ export abstract class BaseRepository<
     }
 
     async create(data: TEntity): Promise<TIdentityType> {
-        const roomTypeDb = new RoomTypeDb()
         const result = await this.repository
             .createQueryBuilder(this._schema.TABLE_NAME)
             .insert()
