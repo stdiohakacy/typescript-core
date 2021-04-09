@@ -1,6 +1,6 @@
 import { ApplicationError } from "../../../../../shared/core/ApplicationError";
 import { Either, Result } from "../../../../../shared/core/Result";
-import { CreateCategoryErrors } from "./CreateRoomTypeErrors";
+import { CreateCategoryErrors } from "./CreateCategoryErrors";
 
 export type CreateCategoryResponse = Either<
     CreateCategoryErrors.NameAlreadyExist |

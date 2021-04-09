@@ -4,12 +4,14 @@ import { AggregateRoot } from "../../../../shared/domain/AggregateRoot";
 import { UniqueEntityId } from "../../../../shared/domain/UniqueEntityId";
 import { CategoryId } from "../entities/CategoryId";
 import { CategoryName } from "../valueObjects/CategoryName";
+import { CategoryDb } from '../../../../shared/infra/databases/typeorm/entities/CategoryDb';
 
 interface ICategoryProps {
     name: CategoryName
 }
 
 export class Category extends AggregateRoot<ICategoryProps> {
+    
     get categoryId(): CategoryId {
         return CategoryId.create(this._id).getValue();
     }

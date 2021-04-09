@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "../../../../../modules/category/domain/aggregateRoots/Category";
+import { CategoryName } from "../../../../../modules/category/domain/valueObjects/CategoryName";
 import { BaseEntityDb } from "./BaseEntityDb";
 import { ProductDb } from "./ProductDb";
 
@@ -15,8 +16,10 @@ export class CategoryDb extends BaseEntityDb<Category> {
     products?: ProductDb[]
 
     toEntity(): Category {
-        throw new Error("Method not implemented.");
+        const name = CategoryName.create({ value: this.name }).getValue()
+        return Category.create({ name }).getValue()
     }
+
     fromEntity(category: Category): CategoryDb {
         this.name = category.name.value
         return this

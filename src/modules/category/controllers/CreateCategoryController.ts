@@ -1,10 +1,10 @@
 import { Response } from "express";
-import { Body, JsonController, Post, Res } from "routing-controllers";
 import Container from 'typedi';
+import { Body, JsonController, Post, Res } from "routing-controllers";
 import { BaseController } from "../../../shared/controllers/BaseController";
 import { CreateCategoryCommand } from "../useCases/commands/create/CreateCategoryCommand";
 import { CreateCategoryUseCase } from "../useCases/commands/create/CreateCategoryUseCase";
-import { CreateCategoryErrors } from "../useCases/commands/create/CreateRoomTypeErrors";
+import { CreateCategoryErrors } from "../useCases/commands/create/CreateCategoryErrors";
 
 @JsonController('/v1')
 export class CreateCategoryController extends BaseController {
