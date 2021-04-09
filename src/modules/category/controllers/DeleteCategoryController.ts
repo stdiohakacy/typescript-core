@@ -1,34 +1,33 @@
+import { DeleteCategoryUseCase } from './../useCases/commands/delete/DeleteCategoryUseCase';
 import { UpdateCategoryUseCase } from './../useCases/commands/update/UpdateCategoryUseCase';
 import { Response } from "express";
 import Container from 'typedi';
-import { Body, JsonController, Param, Put, Res } from "routing-controllers";
+import { Body, Delete, JsonController, Param, Params, Put, Res } from "routing-controllers";
 import { BaseController } from "../../../shared/controllers/BaseController";
 import { UpdateCategoryCommand } from '../useCases/commands/update/UpdateCategoryCommand';
 import { UpdateCategoryErrors } from '../useCases/commands/update/UpdateCategoryErrors';
+import { DeleteCategoryCommand } from '../useCases/commands/delete/DeleteCategoryCommand';
+import { DeleteCategoryErrors } from '../useCases/commands/delete/DeleteCategoryErrors';
 
 @JsonController('/v1')
-export class UpdateCategoryController extends BaseController {
+export class DeleteCategoryController extends BaseController {
     constructor(
-        private readonly _updateCategoryUseCase: UpdateCategoryUseCase = Container.get(UpdateCategoryUseCase)
+        private readonly _deleteCategoryUseCase: DeleteCategoryUseCase = Container.get(DeleteCategoryUseCase)
     ) { super() }
 
-    @Put('/categories/:id([0-9a-f-]{36})')
+    @Delete('/categories/:id([0-9a-f-]{36})')
     async executeImpl(
-        @Body() param: UpdateCategoryCommand,
-        @Res() res: Response,
-        @Param('id') id: string
+        @Params() param: DeleteCategoryCommand,
+        @Res() res: Response
     ): Promise<Response> {
-        param.id = id;
         try {
-            const result = await this._updateCategoryUseCase.handler(param);
+            const result = await this._deleteCategoryUseCase.handler(param);
             const resultValue = result.value
 
             if (result.isLeft()) {
                 switch (resultValue.constructor) {
-                    case UpdateCategoryErrors.NotFound:
+                    case DeleteCategoryErrors.NotFound:
                         return this.notFound(res, resultValue.errorValue())
-                    case UpdateCategoryErrors.NameAlreadyExist:
-                        return this.conflict(res, resultValue.errorValue())
                     case UpdateCategoryErrors.DataCannotSave:
                         return this.fail(res, resultValue.errorValue())
                     default:
