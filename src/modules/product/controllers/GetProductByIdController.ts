@@ -1,6 +1,6 @@
 import { Response } from "express";
 import Container from 'typedi';
-import { Get, JsonController, Params, Post, Res } from "routing-controllers";
+import { Get, JsonController, Params, Res } from "routing-controllers";
 import { BaseController } from "../../../shared/controllers/BaseController";
 import { GetProductByIdUseCase } from "../useCases/queries/get-by-id/GetProductByIdUseCase";
 import { GetProductByIdQuery } from "../useCases/queries/get-by-id/GetProductByIdQuery";
