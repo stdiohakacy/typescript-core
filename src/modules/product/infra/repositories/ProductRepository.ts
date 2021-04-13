@@ -19,4 +19,13 @@ export class ProductRepository extends BaseRepository<Product, ProductDb, string
 
         return !!await query.getOne();
     }
+
+    async getByCategory(categoryId: string): Promise<[Product[], number]> {
+        const query = this.repository
+            .createQueryBuilder('product')
+            .where('product.categoryId = :categoryId', { categoryId })
+
+        const [products, count] = await query.getManyAndCount();
+        return [products.map(product => product.toEntity()), count];
+    }
 }
