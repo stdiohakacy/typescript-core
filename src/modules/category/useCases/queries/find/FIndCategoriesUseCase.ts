@@ -19,5 +19,4 @@ export class FindCategoriesUseCase implements IUseCaseQueryCQRS<FindCategoriesQu
         const [categories, count] = await this._categoryRepository.findAndCount(filter);
         return right(Result.OK(new PaginationResult(categories, count, param.skip, param.limit)))
     }
-
 }

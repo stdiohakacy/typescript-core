@@ -17,9 +17,6 @@ export class CategoryDb extends BaseEntityDb<Category> {
     products?: ProductDb[]
 
     toEntity(): Category {
-        // const name = CategoryName.create({ value: this.name }).getValue()
-        // return Category.create({ name }).getValue()
-
         const categoryNameOrError = CategoryName.create({ value: this.name })
         const categoryOrError = Category.create({ name: categoryNameOrError.getValue() },
             new UniqueEntityId(this.id)
