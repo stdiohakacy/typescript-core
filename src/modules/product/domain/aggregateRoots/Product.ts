@@ -9,16 +9,24 @@ import { CategoryId } from '../../../category/domain/entities/CategoryId';
 interface IProductProps {
     name: ProductName
     price: number
+    categoryId: string
 }
 
 export class Product extends AggregateRoot<IProductProps> {
-    
     get productId(): ProductId {
         return ProductId.create(this._id).getValue();
     }
 
     get name(): ProductName {
         return this.props.name;
+    }
+
+    get price(): number {
+        return this.props.price
+    }
+
+    get categoryId(): string {
+        return this.props.categoryId
     }
 
     public static create(props: IProductProps, id?: UniqueEntityId): Result<Product> {

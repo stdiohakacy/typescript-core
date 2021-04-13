@@ -14,8 +14,8 @@ export class ProductRepository extends BaseRepository<Product, ProductDb, string
 
     async isNameExist(name: string): Promise<boolean> {
         let query = this.repository
-            .createQueryBuilder('')
-            .where(`LOWER(.name) = LOWER(:name)`, { name });
+            .createQueryBuilder('product')
+            .where(`LOWER(product.name) = LOWER(:name)`, { name });
 
         return !!await query.getOne();
     }
