@@ -1,6 +1,5 @@
 import { Product } from './../../../../../modules/product/domain/aggregateRoots/Product';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { IEntity } from "../../../../domain/base/IEntity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { BaseEntityDb } from "./BaseEntityDb";
 import { CategoryDb } from "./CategoryDb";
 import { ProductName } from '../../../../../modules/product/domain/valueObjects/ProductName';
