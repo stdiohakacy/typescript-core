@@ -18,7 +18,7 @@ export class ProductDb extends BaseEntityDb<Product> {
     price: number;
 
     @ManyToOne(() => CategoryDb, category => category.products)
-    @JoinColumn({ name: 'product_id' })
+    @JoinColumn({ name: 'category_id' })
     category: CategoryDb;
 
     @Column({ name: 'category_id', type: 'uuid' })
