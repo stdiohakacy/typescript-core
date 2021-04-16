@@ -1,3 +1,4 @@
+import * as validator from 'class-validator'
 import { UserRepository } from './../../../../user/infra/repositories/UserRepository';
 import { Inject, Service } from "typedi"
 import { IUseCaseQueryCQRS } from "../../../../../shared/core/IUseCase"
@@ -5,7 +6,6 @@ import { left, Result, right } from "../../../../../shared/core/Result"
 import { ChannelRepository } from "../../../infra/repositories/ChannelRepository"
 import { GetSingleChannelQuery } from "./GetSingleChannelQuery"
 import { GetSingleChannelResponse } from "./GetSingleChannelResponse"
-import * as validator from 'class-validator'
 import { ApplicationError } from "../../../../../shared/core/ApplicationError"
 import { GetSingleChannelErrors } from './GetSingleChannelErrors';
 import { Channel } from '../../../domain/aggregateRoots/Channel';
@@ -40,7 +40,7 @@ export class GetSingleChannelUseCase implements IUseCaseQueryCQRS<GetSingleChann
                 return left(new GetSingleChannelErrors.ToUserNotFound())
             const channel = await this._channelRepository.getSingleChannel(fromUser, toUser)
             if (!channel) {
-                const channel = Channel.create({}).getValue()
+                const channel = Channel.create({ isDirect: true }).getValue()
                 try {
                     const channelCreated = await this._channelRepository.createGet(channel)
                     if (!channelCreated)

@@ -4,6 +4,7 @@ import { ChannelName } from '../../../../../modules/chat/domain/valueObjects/cha
 import { UniqueEntityId } from '../../../../domain/UniqueEntityId';
 import { BaseEntityDb } from './BaseEntityDb';
 import { ChannelUserDb } from './ChannelUserDb';
+import { MessageDb } from './MessageDb';
 
 @Entity('channel')
 export class ChannelDb extends BaseEntityDb<Channel> {
@@ -43,6 +44,9 @@ export class ChannelDb extends BaseEntityDb<Channel> {
     /* Relationship */
     @OneToMany(() => ChannelUserDb, channelUsers => channelUsers.channel)
     channelUsers: ChannelUserDb[];
+
+    @OneToMany(() => MessageDb, messages => messages.channel)
+    messages: MessageDb[];
 
     /** handlers */
     toEntity(): Channel {

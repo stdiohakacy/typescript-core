@@ -5,6 +5,7 @@ import { User } from '../../../../../modules/user/domain/aggregateRoots/User';
 import { BaseEntityDb } from './BaseEntityDb';
 import { ChannelUserDb } from './ChannelUserDb';
 import { UniqueEntityId } from '../../../../domain/UniqueEntityId';
+import { MessageDb } from './MessageDb';
 
 @Entity('user')
 export class UserDb extends BaseEntityDb<User> {
@@ -59,6 +60,9 @@ export class UserDb extends BaseEntityDb<User> {
     /* Relationship */
     @OneToMany(() => ChannelUserDb, channelUsers => channelUsers.user)
     channelUsers: ChannelUserDb[];
+
+    @OneToMany(() => MessageDb, messages => messages.user)
+    messages: MessageDb[];
 
     /* Handlers */
     toEntity(): User {
