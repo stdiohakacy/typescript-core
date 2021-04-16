@@ -13,10 +13,29 @@ export class ChannelRepository extends BaseRepository<Channel, ChannelDb, string
     }
 
     async isNameExist(name: string): Promise<boolean> {
-        let query = this.repository
+        let query = await this.repository
             .createQueryBuilder('channel')
             .where(`LOWER(channel.name) = LOWER(:name)`, { name });
 
-        return !!await query.getOne();
+        return !!query.getOne();
+    }
+
+    async getSingleChannel(fromUser: string, toUser: string): Promise<Channel> {
+        let query = await this.repository
+            .createQueryBuilder('channel')
+            .leftJoinAndSelect("channel.channelUsers", "channelUsers")
+            .where("channelUsers.userId IN (:...userIds)", { userIds: [fromUser, toUser] })
+            .groupBy('channel.id')
+            .select('channel.id')
+            .addSelect('channel.name')
+            .addSelect('channel.description')
+            .addSelect('channel.isDirect')
+            .addSelect('channel.lastSeen')
+            .addSelect('channel.lastMessageId')
+            .addSelect('channel.lastMessageCreatedAt')
+            .having('COUNT(DISTINCT(channelUsers.id)) = 2')
+            .getOne()
+
+        return query ? query.toEntity() : null;
     }
 }

@@ -64,9 +64,6 @@ export class CreateChannelUseCase implements IUseCaseCommandCQRS<CreateChannelCo
                 const id = await this._channelRepository.create(channel)
                 if (!id)
                     return left(new CreateChannelErrors.DataCannotSave())
-                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-                console.log(`ID ${id}`)
-                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
                 await Promise.all(userIds.map(async userId => {
                     const channelId = ChannelId.create(new UniqueEntityId(id)).getValue()
                     const uid = UserId.create(new UniqueEntityId(userId)).getValue()

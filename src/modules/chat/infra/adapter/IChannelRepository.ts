@@ -3,4 +3,5 @@ import { IBaseRepository } from "../../../../shared/infra/repositories/IBaseRepo
 
 export interface IChannelRepository extends IBaseRepository<Channel, string> {
     isNameExist(name: string): Promise<boolean>
+    getSingleChannel(fromUser: string, toUser: string): Promise<Channel>
 }

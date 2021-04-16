@@ -1,5 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Channel } from '../../../../../modules/chat/domain/aggregateRoots/Channel';
+import { ChannelName } from '../../../../../modules/chat/domain/valueObjects/channel/ChannelName';
+import { UniqueEntityId } from '../../../../domain/UniqueEntityId';
 import { BaseEntityDb } from './BaseEntityDb';
 import { ChannelUserDb } from './ChannelUserDb';
 
@@ -44,7 +46,20 @@ export class ChannelDb extends BaseEntityDb<Channel> {
 
     /** handlers */
     toEntity(): Channel {
-        throw new Error("Method not implemented.");
+        const { name, description, isDirect, isPrivate, lastSeen, lastMessageId, lastMessageCreatedAt } = this
+
+        const channelOrError = Channel.create({
+            name: name
+                ? ChannelName.create({ value: name }).getValue()
+                : null,
+            description,
+            isDirect,
+            isPrivate,
+            lastSeen,
+            lastMessageId,
+            lastMessageCreatedAt
+        }, new UniqueEntityId(this.id))
+        return channelOrError.isSuccess ? channelOrError.getValue() : null
     }
 
     fromEntity(channel: Channel): ChannelDb {
