@@ -12,4 +12,12 @@ export class UserRepository extends BaseRepository<User, UserDb, string> impleme
             TABLE_NAME: 'user'
         })
     }
+
+    async getByEmail(email: string): Promise<User> {
+        const result = await this.repository
+        .createQueryBuilder('user')
+            .where(`LOWER(user.email) = LOWER(:email)`, { email })
+            .getOne();
+        return result ? result.toEntity() : null;
+    }
 }

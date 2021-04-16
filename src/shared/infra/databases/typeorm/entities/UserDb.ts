@@ -6,6 +6,7 @@ import { BaseEntityDb } from './BaseEntityDb';
 import { ChannelUserDb } from './ChannelUserDb';
 import { UniqueEntityId } from '../../../../domain/UniqueEntityId';
 import { MessageDb } from './MessageDb';
+import { UserEmail } from '../../../../../modules/user/domain/valueObjects/UserEmail';
 
 @Entity('user')
 export class UserDb extends BaseEntityDb<User> {
@@ -23,6 +24,9 @@ export class UserDb extends BaseEntityDb<User> {
 
     @Column('varchar', { name: 'email', length: 120 })
     email: string;
+
+    @Column('varchar', { name: 'password', length: 32, nullable: false })
+    password: string;
 
     @Column('varchar', { name: 'avatar', length: 200, nullable: true })
     avatar: string | null;
@@ -67,10 +71,10 @@ export class UserDb extends BaseEntityDb<User> {
     /* Handlers */
     toEntity(): User {
         const userOrError = User.create({
-            status: this.status,
             firstName: this.firstName,
             lastName: this.lastName,
-            email: this.email,
+            password: this.password,
+            email: this.email ? UserEmail.create({ value: this.email }).getValue() : null,
             avatar: this.avatar,
             gender: this.gender,
             birthday: this.birthday,
@@ -83,13 +87,40 @@ export class UserDb extends BaseEntityDb<User> {
             activedAt: this.activedAt,
             archivedAt: this.archivedAt
         }, new UniqueEntityId(this.id))
-
-        if (userOrError.isFailure)
-            console.log(userOrError.error)
         return userOrError.isSuccess ? userOrError.getValue() : null
     }
 
     fromEntity(user: User): UserDb {
+        if (user.firstName)
+            this.firstName = user.firstName
+        if (user.lastName)
+            this.lastName = user.lastName
+        if (user.password)
+            this.password = user.hashPassword(user.password)
+        if (user.email)
+            this.email = user.email.value
+        if (user.avatar)
+            this.avatar = user.avatar
+        if (user.gender)
+            this.gender = user.gender
+        if (user.birthday)
+            this.birthday = user.birthday
+        if (user.phone)
+            this.phone = user.phone
+        if (user.address)
+            this.address = user.address
+        if (user.culture)
+            this.culture = user.culture
+        if (user.currency)
+            this.currency = user.currency
+        if (user.activeKey)
+            this.activeKey = user.activeKey
+        if (user.activeExpire)
+            this.activeExpire = user.activeExpire
+        if (user.activedAt)
+            this.activedAt = user.activedAt
+        if (user.archivedAt)
+            this.archivedAt = user.archivedAt
         return this
     }
 }

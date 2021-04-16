@@ -5,23 +5,26 @@ import { UniqueEntityId } from "../../../../shared/domain/UniqueEntityId";
 import { UserStatus } from "../../enums/UserStatus";
 import { UserId } from '../entities/UserId';
 import { UserCreated } from '../events/UserCreated';
+import { UserEmail } from '../valueObjects/UserEmail';
+import { hashMD5 } from '../../../../shared/libs/crypt';
 
 interface IUserProps {
-    status: UserStatus;
     firstName: string;
-    lastName: string | null;
-    email: string;
-    avatar: string | null;
-    gender: GenderType | null;
-    birthday: string | null;
-    phone: string | null;
-    address: string | null;
-    culture: string | null;
-    currency: string | null;
-    activeKey: string | null;
-    activeExpire: Date | null;
-    activedAt: Date | null;
-    archivedAt: Date | null;
+    email: UserEmail;
+    password: string;
+    status?: UserStatus;
+    lastName?: string;
+    avatar?: string;
+    gender?: GenderType;
+    birthday?: string;
+    phone?: string;
+    address?: string;
+    culture?: string;
+    currency?: string;
+    activeKey?: string;
+    activeExpire?: Date;
+    activedAt?: Date;
+    archivedAt?: Date;
 }
 
 export class User extends AggregateRoot<IUserProps> {
@@ -41,8 +44,12 @@ export class User extends AggregateRoot<IUserProps> {
         return this.props.lastName
     }
 
-    get email(): string {
+    get email(): UserEmail {
         return this.props.email
+    }
+
+    get password(): string {
+        return this.props.password
     }
 
     get avatar(): string {
@@ -81,21 +88,32 @@ export class User extends AggregateRoot<IUserProps> {
         return this.props.activeExpire
     }
 
-    get activedAt(): Date | null{
+    get activedAt(): Date | null {
         return this.props.activedAt
     }
 
-    get archivedAt(): Date | null{
+    get archivedAt(): Date | null {
         return this.props.archivedAt
     }
 
     public static create(props: IUserProps, id?: UniqueEntityId): Result<User> {
-        const user = new User({...props}, id)
+        const user = new User({ ...props }, id)
 
         const isNew = !!user === false
 
-        if(isNew)
+        if (isNew)
             user.addDomainEvent(new UserCreated(user))
         return Result.OK(user)
     }
+
+    /* Handlers */
+
+    public hashPassword(password: string): string {
+        return hashMD5(password, '$$');
+    }
+
+    public comparePassword(password: string): boolean {
+        return this.password === this.hashPassword(password);
+    }
+
 }
