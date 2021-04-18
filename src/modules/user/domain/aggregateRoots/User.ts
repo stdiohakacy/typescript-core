@@ -7,6 +7,7 @@ import { UserId } from '../entities/UserId';
 import { UserCreated } from '../events/UserCreated';
 import { UserEmail } from '../valueObjects/UserEmail';
 import { hashMD5 } from '../../../../shared/libs/crypt';
+import { JWTToken, RefreshToken } from '../../../../shared/services/auth/TokenAlias';
 
 interface IUserProps {
     firstName: string;
@@ -25,6 +26,9 @@ interface IUserProps {
     activeExpire?: Date;
     activedAt?: Date;
     archivedAt?: Date;
+
+    accessToken?: JWTToken
+    refreshToken?: RefreshToken
 }
 
 export class User extends AggregateRoot<IUserProps> {
@@ -96,6 +100,14 @@ export class User extends AggregateRoot<IUserProps> {
         return this.props.archivedAt
     }
 
+    get accessToken(): JWTToken {
+        return this.props.accessToken
+    }
+
+    get refreshToken(): RefreshToken {
+        return this.props.refreshToken
+    }
+
     public static create(props: IUserProps, id?: UniqueEntityId): Result<User> {
         const user = new User({ ...props }, id)
 
@@ -116,4 +128,13 @@ export class User extends AggregateRoot<IUserProps> {
         return this.password === this.hashPassword(password);
     }
 
+    public setToken(accessToken: JWTToken, refreshToken: RefreshToken): void {
+        this.props.accessToken = accessToken
+        this.props.refreshToken = refreshToken
+        // this.addDomainEvent(new UserLoggedIn(this))
+    }
+
+    public isLogin(): boolean {
+        return !!this.props.accessToken && !!this.props.refreshToken
+    }
 }

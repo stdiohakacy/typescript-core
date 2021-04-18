@@ -5,6 +5,7 @@ import { ApiService } from './shared/api/ApiService';
 import { API_PORT, ENABLE_API_SERVICE, IS_DEVELOPMENT } from './shared/configs/Configuration';
 import * as cluster from 'cluster';
 import * as os from 'os';
+import Container from 'typedi';
 import { RedisContext } from './shared/infra/databases/redis/RedisContext';
 
 const startApplication = async () => {
