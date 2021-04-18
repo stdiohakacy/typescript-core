@@ -16,3 +16,8 @@ export const API_PORT: number = Number(process.env.API_PORT);
 // CONFIGURATION OF REDIS
 export const REDIS_CONFIG_HOST: string = process.env.REDIS_CONFIG_HOST ?? '';
 export const REDIS_CONFIG_PORT: number = process.env.REDIS_CONFIG_PORT ? Number(process.env.REDIS_CONFIG_PORT) : 0;
+
+// CONFIGURATION OF JWT
+export const JWT_HASH_NAME: string = process.env.JWT_HASH_NAME ?? '';
+export const JWT_SECRET: string = process.env.JWT_SECRET ?? '';
+export const JWT_SIGNATURE: string = process.env.JWT_SIGNATURE ?? '';

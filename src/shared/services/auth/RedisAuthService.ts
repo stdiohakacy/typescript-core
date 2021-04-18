@@ -1,9 +1,10 @@
+import { DOMAIN, JWT_SECRET, JWT_SIGNATURE, PROJECT_ID, PROTOTYPE } from './../../configs/Configuration';
 import { RedisContext } from '../../infra/databases/redis/RedisContext';
 import { JWTToken, RefreshToken } from './TokenAlias';
-import { Inject, Service } from 'typedi';
 import * as jwt from 'jsonwebtoken';
 import { uid } from 'rand-token';
 import { User } from '../../../modules/user/domain/aggregateRoots/User';
+import { JWT_HASH_NAME } from '../../configs/Configuration';
 
 interface IJwtPayload {
     sub: string; // Subject
@@ -33,25 +34,25 @@ export class RedisAuthService implements IJwtAuthService {
     constructor() {
         this._redisContext = new RedisContext().createConnection()
     }
-    public jwtHashName = 'activeJwtClients'
-    
+    public jwtHashName = JWT_HASH_NAME
+
     public signJWT(user: User): JWTToken {
         return jwt.sign({
             email: user.email.value
-        }, 'mwGAPb8uwN9MMGdg9CbzPhssARDL9E7fggHdLbwRb5A4p4w9NHAAJjN4sZXyWWMrCnCfj4quCyG2qKmY2C9Qnk5j5MRDV8rTJXfKvaM9S2wLkGjERWvtmmakzHeGZV6r', {
+        }, JWT_SECRET, {
             subject: user.id.toString(),
             expiresIn: 24 * 60 * 60,
-            issuer: 'node-core',
-            audience: `${'http'}://${'localhost'}`,
-            algorithm: 'HS256'
+            issuer: PROJECT_ID,
+            audience: `${PROTOTYPE}://${DOMAIN}`,
+            algorithm: JWT_SIGNATURE
         } as jwt.SignOptions);
     }
 
     public decodeJWT(token: JWTToken): IJwtPayloadExtend {
-        return jwt.verify(token, 'mwGAPb8uwN9MMGdg9CbzPhssARDL9E7fggHdLbwRb5A4p4w9NHAAJjN4sZXyWWMrCnCfj4quCyG2qKmY2C9Qnk5j5MRDV8rTJXfKvaM9S2wLkGjERWvtmmakzHeGZV6r', {
-            issuer: 'node-core',
-            audience: `${'http'}://${'localhost'}`,
-            algorithms: 'HS256'
+        return jwt.verify(token, JWT_SECRET, {
+            issuer: PROJECT_ID,
+            audience: `${PROTOTYPE}://${DOMAIN}`,
+            algorithms: JWT_SIGNATURE
         } as unknown as jwt.VerifyOptions) as IJwtPayloadExtend
     }
 
