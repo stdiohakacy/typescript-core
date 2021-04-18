@@ -4,12 +4,10 @@ import { IUseCaseCommandCQRS } from '../../../../../shared/core/IUseCase'
 import { left, Result, right } from '../../../../../shared/core/Result'
 import { UserRepository } from '../../../infra/repositories/UserRepository'
 import { ApplicationError } from '../../../../../shared/core/ApplicationError';
-import { User } from '../../../domain/aggregateRoots/User';
 import { LoginUserCommand } from './LoginUserCommand';
 import { LoginUserResponse } from './LoginUserResponse';
 import { LoginUserErrors } from './LoginUserErrors';
 import { UserAuthenticated } from '../../../domain/UserAuthenticated';
-import { RedisContext } from '../../../../../shared/infra/databases/redis/RedisContext';
 import { RedisAuthService } from '../../../../../shared/services/auth/RedisAuthService';
 
 @Service()

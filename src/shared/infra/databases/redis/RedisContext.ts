@@ -11,7 +11,6 @@ export interface IRedisContext {
     deleteOne(key: string): Promise<number>
 }
 
-@Service('redis.context')
 export class RedisContext implements IRedisContext {
     private _connection: redis.RedisClient;
     private tokenExpireTime: number = 604800;
@@ -22,34 +21,24 @@ export class RedisContext implements IRedisContext {
     }
 
     get redisClient(): redis.RedisClient {
-        if (!this._connection) {
+        if (!this._connection)
             throw new Error(`[Redis]: Redis client is not existed!`)
-        }
         console.log('[Redis]: Redis client connected')
         return this._connection;
     }
 
     public createConnection(redisLib = redis): redis.RedisClient {
-        if (this._connection && this._connection.connected) {
-            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-            console.log('Exist connection')
-            console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+        if (this._connection && this._connection.connected)
             return this._connection;
-        }
 
         this._connection = redisLib.createClient({
             host: 'localhost',
             port: 6379,
         } as redis.ClientOpts) as redis.RedisClient;
-
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-        console.log('Create redis connection!')
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-
         return this._connection;
     }
 
-    public set(key: string, value: any): Promise<any> {
+    public async set(key: string, value: any): Promise<any> {
         return new Promise((resolve, reject) => {
             this.redisClient.set(key, value, (error, reply) => {
                 if (error)
@@ -62,7 +51,7 @@ export class RedisContext implements IRedisContext {
         })
     }
 
-    getOne<T>(key: string): Promise<T> {
+    public async getOne<T>(key: string): Promise<T> {
         return new Promise((resolve, reject) => {
             this.redisClient.get(key, (error: Error, reply: unknown) => {
                 if (error)
@@ -72,14 +61,20 @@ export class RedisContext implements IRedisContext {
         })
     }
 
-    count(key: string): Promise<number> {
-        throw new Error('Method not implemented.');
+    public async count(key: string): Promise<number> {
+        const allKeys = await this.getAllKeys(key);
+        return allKeys.length;
     }
-    isExist(key: string): Promise<boolean> {
-        throw new Error('Method not implemented.');
+    
+    public async isExist(key: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            return this.count(key)
+                .then((count) => resolve(count >= 1 ? true : false))
+                .catch((err) => reject(err))
+        })
     }
 
-    getAllKeys(wildCard: string): Promise<string[]> {
+    public async getAllKeys(wildCard: string): Promise<string[]> {
         return new Promise((resolve, reject) => {
             this.redisClient.keys(wildCard,
                 async (error: Error, results: string[]) => {
@@ -90,7 +85,7 @@ export class RedisContext implements IRedisContext {
         })
     }
 
-    getAllKeyValue(wildCard: string): Promise<any[]> {
+    public async getAllKeyValue(wildCard: string): Promise<any[]> {
         return new Promise((resolve, reject) => {
             return this._connection.keys(wildCard,
                 async (error: Error, results: string[]) => {
@@ -107,7 +102,7 @@ export class RedisContext implements IRedisContext {
         })
     }
 
-    deleteOne(key: string): Promise<number> {
+    public async deleteOne(key: string): Promise<number> {
         return new Promise((resolve, reject) => {
             this.redisClient.del(key, (error, reply) => {
                 if (error)
