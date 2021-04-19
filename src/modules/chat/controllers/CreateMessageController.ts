@@ -1,10 +1,11 @@
 import { CreateMessageUseCase } from './../useCases/message/commands/create/CreateMessageUseCase';
 import { Response } from "express";
-import { Body, JsonController, Post, Res } from "routing-controllers";
+import { Authorized, Body, CurrentUser, JsonController, Post, Res } from "routing-controllers";
 import Container from 'typedi';
 import { BaseController } from "../../../shared/controllers/BaseController";
 import { CreateMessageCommand } from '../useCases/message/commands/create/CreateMessageCommand';
 import { CreateMessageErrors } from '../useCases/message/commands/create/CreateMessageErrors';
+import { UserAuthenticated } from '../../user/domain/UserAuthenticated';
 
 @JsonController('/v1/chat')
 export class CreateMessageController extends BaseController {
@@ -12,8 +13,10 @@ export class CreateMessageController extends BaseController {
         private readonly _createMessageUseCase: CreateMessageUseCase = Container.get(CreateMessageUseCase)
     ) { super() }
 
+    @Authorized()
     @Post('/messages')
-    async executeImpl(@Body() param: CreateMessageCommand, @Res() res: Response): Promise<Response> {
+    async executeImpl(@Body() param: CreateMessageCommand, @Res() res: Response, @CurrentUser() userAuth: UserAuthenticated): Promise<Response> {
+        param.fromUser = userAuth.userId
         try {
             const result = await this._createMessageUseCase.handler(param);
             const resultValue = result.value

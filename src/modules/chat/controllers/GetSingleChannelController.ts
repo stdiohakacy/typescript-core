@@ -1,6 +1,6 @@
 import { Response } from "express";
 import Container from 'typedi';
-import { Authorized, Body, BodyParam, CurrentUser, JsonController, Post, Res } from "routing-controllers";
+import { Authorized, BodyParam, CurrentUser, JsonController, Post, Res } from "routing-controllers";
 import { BaseController } from "../../../shared/controllers/BaseController";
 import { GetSingleChannelQuery } from "../useCases/channel/queries/GetSingleChannelQuery";
 import { GetSingleChannelUseCase } from "../useCases/channel/queries/GetSingleChannelUseCase";
