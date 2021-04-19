@@ -9,13 +9,13 @@ import { LoginUserCommand } from './LoginUserCommand';
 import { LoginUserResponse } from './LoginUserResponse';
 import { LoginUserErrors } from './LoginUserErrors';
 import { UserAuthenticated } from '../../../domain/UserAuthenticated';
-import { IJwtAuthService, RedisAuthService } from '../../../../../shared/services/auth/RedisAuthService';
+import { RedisAuthService } from '../../../../../shared/services/auth/RedisAuthService';
 
 @Service()
 export class LoginUserUseCase implements IUseCaseCommandCQRS<LoginUserCommand, LoginUserResponse> {
     @Inject('user.repository')
     private readonly _userRepository: UserRepository
-    
+
     private readonly _redisAuthService: RedisAuthService
     constructor() {
         this._redisAuthService = new RedisAuthService()

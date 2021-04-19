@@ -1,10 +1,11 @@
 import { Response } from "express";
 import Container from 'typedi';
-import { Authorized, Body, JsonController, Post, Res } from "routing-controllers";
+import { Authorized, Body, BodyParam, CurrentUser, JsonController, Post, Res } from "routing-controllers";
 import { BaseController } from "../../../shared/controllers/BaseController";
 import { GetSingleChannelQuery } from "../useCases/channel/queries/GetSingleChannelQuery";
 import { GetSingleChannelUseCase } from "../useCases/channel/queries/GetSingleChannelUseCase";
 import { GetSingleChannelErrors } from "../useCases/channel/queries/GetSingleChannelErrors";
+import { UserAuthenticated } from "../../user/domain/UserAuthenticated";
 
 @JsonController('/v1/chat')
 export class CreateChannelController extends BaseController {
@@ -14,7 +15,10 @@ export class CreateChannelController extends BaseController {
 
     @Authorized()
     @Post('/channels/single-channel')
-    async executeImpl(@Body() param: GetSingleChannelQuery, @Res() res: Response): Promise<Response> {
+    async executeImpl(@BodyParam('toUser') toUser: string, @Res() res: Response, @CurrentUser() userAuth: UserAuthenticated): Promise<Response> {
+        const param = new GetSingleChannelQuery()
+        param.fromUser = userAuth.userId
+        param.toUser = toUser
         try {
             const result = await this._getSingleChannelUseCase.handler(param);
             const resultValue = result.value

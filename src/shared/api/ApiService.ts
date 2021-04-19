@@ -42,8 +42,8 @@ export class ApiService {
             validation: false,
             defaultErrorHandler: false,
             development: IS_DEVELOPMENT,
-            // authorizationChecker: authenticator.authorizationHttpChecker,
-            // currentUserChecker: authenticator.userAuthChecker
+            authorizationChecker: authenticator.authorizationHttpChecker,
+            currentUserChecker: authenticator.userAuthChecker
         };
 
         const httpServer = new HttpServer();
