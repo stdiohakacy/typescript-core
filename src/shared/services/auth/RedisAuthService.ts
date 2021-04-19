@@ -1,10 +1,10 @@
-import { DOMAIN, JWT_SECRET, JWT_SIGNATURE, PROJECT_ID, PROTOTYPE } from './../../configs/Configuration';
-import { RedisContext } from '../../infra/databases/redis/RedisContext';
+import { JWT_HASH_NAME, JWT_SECRET, PROJECT_ID, PROTOTYPE, DOMAIN, JWT_SIGNATURE } from './../../configs/Configuration';
+import { IRedisContext, RedisContext } from '../../infra/databases/redis/RedisContext';
 import { JWTToken, RefreshToken } from './TokenAlias';
+import { Inject, Service } from 'typedi';
 import * as jwt from 'jsonwebtoken';
 import { uid } from 'rand-token';
 import { User } from '../../../modules/user/domain/aggregateRoots/User';
-import { JWT_HASH_NAME } from '../../configs/Configuration';
 
 interface IJwtPayload {
     sub: string; // Subject
@@ -30,9 +30,10 @@ export interface IJwtAuthService {
 }
 
 export class RedisAuthService implements IJwtAuthService {
-    private readonly _redisContext;
+    private readonly _redisContext: IRedisContext
     constructor() {
-        this._redisContext = new RedisContext().createConnection()
+        this._redisContext = RedisContext.getInstance()
+        this._redisContext.createConnection()
     }
     public jwtHashName = JWT_HASH_NAME
 

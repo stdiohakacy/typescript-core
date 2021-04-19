@@ -1,6 +1,6 @@
 import { Response } from "express";
 import Container from 'typedi';
-import { Body, JsonController, Post, Res } from "routing-controllers";
+import { Authorized, Body, JsonController, Post, Res } from "routing-controllers";
 import { BaseController } from "../../../shared/controllers/BaseController";
 import { GetSingleChannelQuery } from "../useCases/channel/queries/GetSingleChannelQuery";
 import { GetSingleChannelUseCase } from "../useCases/channel/queries/GetSingleChannelUseCase";
@@ -12,6 +12,7 @@ export class CreateChannelController extends BaseController {
         private readonly _getSingleChannelUseCase: GetSingleChannelUseCase = Container.get(GetSingleChannelUseCase)
     ) { super() }
 
+    @Authorized()
     @Post('/channels/single-channel')
     async executeImpl(@Body() param: GetSingleChannelQuery, @Res() res: Response): Promise<Response> {
         try {

@@ -6,11 +6,12 @@ import { API_PORT, ENABLE_API_SERVICE, IS_DEVELOPMENT } from './shared/configs/C
 import * as cluster from 'cluster';
 import * as os from 'os';
 import Container from 'typedi';
-import { RedisContext } from './shared/infra/databases/redis/RedisContext';
+import { IRedisContext, RedisContext } from './shared/infra/databases/redis/RedisContext';
+
 
 const startApplication = async () => {
     if (ENABLE_API_SERVICE)
-        new ApiService().setup();
+    new ApiService().setup();
 };
 
 if (IS_DEVELOPMENT) {
@@ -18,7 +19,9 @@ if (IS_DEVELOPMENT) {
         // Start TypeORM
         createConnection()
         // Start Redis
-        new RedisContext().createConnection()
+        // new RedisContext().createConnection()
+        const redisContext = RedisContext.getInstance()
+        redisContext.createConnection()
         console.log(`App Express Server listening on port : ${API_PORT}`)
     });
 }

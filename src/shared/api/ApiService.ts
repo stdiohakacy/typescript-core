@@ -5,7 +5,7 @@ import * as express from 'express';
 import { RoutingControllersOptions } from 'routing-controllers';
 import { Container } from 'typedi';
 import { API_PORT, IS_DEVELOPMENT } from '../configs/Configuration';
-import { ApiAuthenticator } from '../middlewares/ApiAuthenticator';
+import { ApiAuthenticator } from './ApiAuthenticator';
 import { HttpServer } from './HttpServer';
 
 export class ApiService {
@@ -33,17 +33,17 @@ export class ApiService {
                 // path.join(__dirname, './controllers/**/*{.js,.ts}')
                 path.join(__dirname, '../../modules/**/*{.js,.ts}')
             ],
-            // middlewares: [
-            //     path.join(__dirname, './middlewares/*{.js,.ts}')
-            // ],
+            middlewares: [
+                path.join(__dirname, '../middlewares/ErrorMiddleware.ts')
+            ],
             // interceptors: [
             //     path.join(__dirname, './interceptors/*{.js,.ts}')
             // ],
             validation: false,
             defaultErrorHandler: false,
             development: IS_DEVELOPMENT,
-            authorizationChecker: authenticator.authorizationHttpChecker,
-            currentUserChecker: authenticator.userAuthChecker
+            // authorizationChecker: authenticator.authorizationHttpChecker,
+            // currentUserChecker: authenticator.userAuthChecker
         };
 
         const httpServer = new HttpServer();

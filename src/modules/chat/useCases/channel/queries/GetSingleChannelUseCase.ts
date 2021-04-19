@@ -39,6 +39,7 @@ export class GetSingleChannelUseCase implements IUseCaseQueryCQRS<GetSingleChann
             if (!isToUserExist)
                 return left(new GetSingleChannelErrors.ToUserNotFound())
             const channel = await this._channelRepository.getSingleChannel(fromUser, toUser)
+
             if (!channel) {
                 const channel = Channel.create({ isDirect: true }).getValue()
                 try {
